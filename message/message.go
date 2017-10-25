@@ -14,12 +14,11 @@ type GetMessage struct {
 	Message string
 	SenderId int32
     Name string
-    IconImage string
+    Icon string
     Datetime string
 }
 
 type PostMessage struct {
-    Id int
     Sender int
     Message string
     Datetime string
@@ -34,7 +33,7 @@ func New(rows *sql.Rows) *GetMessage {
 			&res.Message,
 			&res.SenderId,
             &res.Name,
-            &res.IconImage,
+            &res.Icon,
             &res.Datetime,
         )
         if err != nil {
@@ -49,7 +48,7 @@ func New(rows *sql.Rows) *GetMessage {
 func MessageAction(db *sql.DB, r *http.Request) []byte {
 	switch r.Method {
 	case "GET":
-		query := "SELECT m.id, m.message, u.id, u.name, u.icon_image, m.datetime FROM messages as m INNER JOIN users as u ON m.sender_id = u.id ORDER BY m.id"
+		query := "SELECT m.id, m.message, u.id, u.name, u.icon, m.datetime FROM messages as m INNER JOIN users as u ON m.sender_id = u.id ORDER BY m.id"
 		rows, err := db.Query(query)
 		if err != nil {
 			panic(err)
@@ -78,7 +77,7 @@ func MessageAction(db *sql.DB, r *http.Request) []byte {
 		if err != nil {
 			panic(err)
 		}
-		query := "INSERT INTO messages VALUES (" + strconv.Itoa(row.Id) + "," + strconv.Itoa(row.Sender) + ", '" + row.Message + "', '" + row.Datetime + "')"
+		query := "INSERT INTO messages VALUES ("  + strconv.Itoa(row.Sender) + ", '" + row.Message + "', '" + row.Datetime + "')"
 		_, err = db.Query(query)
 		if err != nil {
 			panic(err)

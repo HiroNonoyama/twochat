@@ -11,6 +11,7 @@ import (
 
     message "./message"
     ws "./websocket"
+    user "./user"
 )
 
 func main() {
@@ -29,6 +30,13 @@ func main() {
         w.Header().Set( "Access-Control-Allow-Credentials", "true" )
         w.Header().Set( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization" )
         w.Write(message.MessageAction(db, r))
+    })
+
+    http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+        w.Header().Set("Access-Control-Allow-Origin", "*")
+        w.Header().Set( "Access-Control-Allow-Credentials", "true" )
+        w.Header().Set( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization" )
+        w.Write(user.Login(db, r))
     })
 
     http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {

@@ -3,7 +3,6 @@ package ws
 import (
 	"net/http"
 	"database/sql"
-	"strconv"
 	"fmt"
 
 	"github.com/gorilla/websocket"
@@ -60,7 +59,7 @@ func (c Client) readMsg(db *sql.DB, hub *Hub) {
 }
 
 func getRes(db *sql.DB, msg message.PostMessage) *message.GetMessage {
-	query := "SELECT m.id, m.message, u.id, u.name, u.icon_image, m.datetime FROM messages as m INNER JOIN users as u ON m.sender_id = u.id WHERE m.id = " + strconv.Itoa(msg.Id) + " ORDER BY m.id"
+	query := "SELECT m.id, m.message, u.id, u.name, u.icon, m.datetime FROM messages as m INNER JOIN users as u ON m.sender_id = u.id WHERE m.id = (SELECT MAX(id) FROM messages) ORDER BY m.id"
 	row, err := db.Query(query)
 	if err != nil {
 		panic(err)
